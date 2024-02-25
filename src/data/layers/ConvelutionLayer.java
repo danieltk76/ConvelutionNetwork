@@ -121,8 +121,9 @@ public class ConvelutionLayer extends layer
                 outRow++;
 
             }
-            return output;
+            
         }
+        return output;
 
 
 
@@ -159,13 +160,17 @@ public class ConvelutionLayer extends layer
     @Override
     public double[] getOuput(List<double[][]> input) 
     {
-        
+        List<double[][]> output = convelutionForwardPass(input);
+
+        return nextLayer.getOuput(output);
     }
 
     @Override
     public double[] getOuput(double[] input) 
     {
+        List<double[][]> matrixInput = vectorToMatrix(input, inLength, inRows, inCols);
         
+        return getOuput(matrixInput);
     }
 
     @Override
@@ -183,24 +188,27 @@ public class ConvelutionLayer extends layer
     @Override
     public int getOutputLength()
     {
-       
+       return _filters.size()*inLength;
     }
 
     @Override
     public int getOutputRows() 
     {
+        return (inRows-filterSize)/stepSize + 1;
         
     }
 
     @Override
     public int getOutputCols() 
     {
+        return (inCols-filterSize)/stepSize + 1;
         
     }
 
     @Override
     public int getOutputElements() 
     {
+        return getOutputCols()*getOutputRows()*getOutputLength();
        
     }
     
