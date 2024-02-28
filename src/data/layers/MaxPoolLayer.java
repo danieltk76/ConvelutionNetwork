@@ -116,9 +116,17 @@ public class MaxPoolLayer extends layer
    
     public void backPropagation(double[] derivative)
     {
-        List<double[][]> matrixList = vectorToMatrix(derivative, getOutputLength(), getOutputRows(), getOutputCols());
+        try{
+            List<double[][]> matrixList = vectorToMatrix(derivative, getOutputLength(), getOutputRows(), getOutputCols());
 
-        backPropagation(matrixList);
+            backPropagation(matrixList);
+
+        } catch (RuntimeException e)
+        {
+            System.out.println("Check backPropegation method in correlation with matrixList");
+
+        }
+        
         
     }
 

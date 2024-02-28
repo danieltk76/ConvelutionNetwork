@@ -27,10 +27,17 @@ public class connectedLayer extends layer
         
         
 
+        try{
+            weights = new double[inLength][outLength];
 
-        weights = new double[inLength][outLength];
+            setRandomWeights();
 
-        setRandomWeights();
+        } catch (RuntimeException e)
+        {
+            System.out.println("Check connectedLayer mutli-arg, test setRandomWeights method");
+
+        }
+        
 
 
     }
@@ -212,20 +219,21 @@ public class connectedLayer extends layer
     }
 
     @Override
-    public double[] getOuput(List<double[][]> input) {
-        // TODO Auto-generated method stub
+    public double[] getOuput(List<double[][]> input) 
+    {
+       
         throw new UnsupportedOperationException("Unimplemented method 'getOuput'");
     }
 
     @Override
-    public double[] getOuput(double[] input) {
-        // TODO Auto-generated method stub
+    public double[] getOuput(double[] input) 
+    {
         throw new UnsupportedOperationException("Unimplemented method 'getOuput'");
     }
 
     @Override
-    public void backPropagation(double derivativelxSum) {
-        // TODO Auto-generated method stub
+    public void backPropagation(double derivativelxSum) 
+    {
         throw new UnsupportedOperationException("Unimplemented method 'backPropagation'");
     }
 

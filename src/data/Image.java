@@ -5,6 +5,8 @@ public class Image
     private double[][] data;
     private int label;
 
+
+    // shadowing prevention
     public Image(double[][] data)
     {
         this.data = data;
@@ -23,6 +25,8 @@ public class Image
         return data;
     }
 
+
+    // shadowing prevention
     public Image(double[][] data, int label)
     {
         this.data = data;

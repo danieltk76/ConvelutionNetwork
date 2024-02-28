@@ -9,7 +9,7 @@ public class DataReader
     private final int rows = 28;
     private final int cols = 28;
 
-    public List<Image> readData(String path)
+    public List<Image> readData(String path) throws FileNotFoundException
     {
         List<Image> images = new ArrayList<>();
 
