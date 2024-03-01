@@ -175,19 +175,19 @@ public class ConvelutionLayer extends layer
 
     @Override
     // change in loss compared to change in relative output
-    public void backPropagation(double derivativelxSum) 
+    public void backPropagation(double[] derivative) 
     {
 
+        List<double[][]> matrixInput = vectorToMatrix(derivative, inLength, inRows, inCols);
+        backPropagation(matrixInput);
 
-
-
-        
     }
 
     @Override
     public void backPropagation(List<double[][]> derivative) 
     {
         List<double[][]> filtersDelta = new ArrayList<>();
+        List<double[][]> derivativePreviousLayer = new ArrayList<>();
 
         for (int f = 0; f < _filters.size(); f++)
         {
@@ -196,6 +196,7 @@ public class ConvelutionLayer extends layer
 
         for (int i = 0; i < lastInput.size(); i++)
         {
+            double[][] errorForInput = new double[inRows][inCols];
             for (int f = 0; f < _filters.size(); f++)
             {
                 double[][] currFilter = _filters.get(f);
@@ -203,12 +204,137 @@ public class ConvelutionLayer extends layer
                 double[][] spaceError = spaceArray(error);
                 double[][] derivativelf = convolve(lastInput.get(i), spaceError, 1);
 
+                double[][] delta = multiply(derivativelf, _learningRate);
+                double[][] newTotalDelta = add(filtersDelta.get(f), delta);
+                filtersDelta.set(f, newTotalDelta);
+
+                double[][] flippedError = flipArrayHorizontal(flipArrayVerticle(spaceError));
+                errorForInput = add(errorForInput, fullConvolve(currFilter, flippedError));
+
             }
+            derivativePreviousLayer.add(errorForInput);
+        }
+        // updating filters
+        for (int f = 0; f < _filters.size(); f++)
+        {
+            double[][] modified = add(filtersDelta.get(f), _filters.get(f));
+            _filters.set(f, modified);
+
+        }
+
+        if (previousLayer != null)
+        {
+            previousLayer.backPropagation(derivativePreviousLayer);
         }
         
 
         
     }
+
+    private double[][] add(double[][] ds, double[][] delta) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'add'");
+    }
+
+    private double[][] multiply(double[][] derivativelf, double _learningRate2) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'multiply'");
+    }
+
+    public double[][] flipArrayHorizontal(double[][] array)
+    {
+        int rows = array.length;
+        int cols = array[0].length;
+
+        double[][] output = new double[rows][cols];
+
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                output[rows-i-1][j] = array[i][j];
+            }
+
+        }
+        return output;
+
+    }
+
+    public double[][] flipArrayVerticle(double[][] array)
+    {
+        int rows = array.length;
+        int cols = array[0].length;
+
+        double[][] output = new double[rows][cols];
+
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                output[rows][j-i-1] = array[i][j];
+            }
+
+        }
+        return output;
+
+    }
+
+    public double[][] fullConvolve(double[][] input, double[][] filter)
+    {
+        int outRows = (input.length + filter.length) + 1;
+        int outCols = (input[0].length + filter[0].length) + 1;
+
+        int inRows = input.length;
+        int inCols = input[0].length;
+
+        int fRows = filter.length;
+        int fCols = filter[0].length;
+
+        double[][] output = new double[outRows][outCols];
+
+
+        int outRow = 0;
+        int outCol;
+
+        for (int i = -fRows; i < inRows; i += stepSize)
+        {
+            outCol = 0;
+            for (int j = -fCols; j < inCols; j+= stepSize)
+            {
+                double sum = 0.0;
+
+                for (int x = 0; x < fRows; x++)
+                {
+                    for (int y = 0; y < fCols; y++)
+                    {
+                        int inputRowIndex = i+x;
+                        int inputColIndex = j+x;
+
+                        if (inputRowIndex >= 0 && inputColIndex >= 0 && inputRowIndex < inRows && inputColIndex < inCols)
+                        {
+                            double value = filter[x][y] * input[inputRowIndex][inputColIndex];
+                            sum += value;
+                            
+
+                        }
+
+                  
+
+                    }
+                    
+                }
+                output[outRow][outCol] = sum;
+                outCol++;
+            }
+            
+        }
+        return output;
+    }
+
+
+
+
+
 
     @Override
     public int getOutputLength()
@@ -235,6 +361,12 @@ public class ConvelutionLayer extends layer
     {
         return getOutputCols()*getOutputRows()*getOutputLength();
        
+    }
+
+    @Override
+    public void backPropagation(double derivativelxSum) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'backPropagation'");
     }
     
 }
