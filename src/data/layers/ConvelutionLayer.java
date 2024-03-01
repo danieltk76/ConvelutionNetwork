@@ -174,14 +174,39 @@ public class ConvelutionLayer extends layer
     }
 
     @Override
+    // change in loss compared to change in relative output
     public void backPropagation(double derivativelxSum) 
     {
+
+
+
+
         
     }
 
     @Override
     public void backPropagation(List<double[][]> derivative) 
     {
+        List<double[][]> filtersDelta = new ArrayList<>();
+
+        for (int f = 0; f < _filters.size(); f++)
+        {
+            filtersDelta.add(new double[filterSize][filterSize]);
+        }
+
+        for (int i = 0; i < lastInput.size(); i++)
+        {
+            for (int f = 0; f < _filters.size(); f++)
+            {
+                double[][] currFilter = _filters.get(f);
+                double[][] error = derivative.get(i*_filters.size() + f);
+                double[][] spaceError = spaceArray(error);
+                double[][] derivativelf = convolve(lastInput.get(i), spaceError, 1);
+
+            }
+        }
+        
+
         
     }
 
